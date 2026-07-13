@@ -1,214 +1,188 @@
-// ===============================
-// BEAUTY STUDIO SCRIPT
-// ===============================
+document.addEventListener("DOMContentLoaded", () => {
+
+    // =========================
+    // Плавое появление блоков
+    // =========================
+
+    const elements = document.querySelectorAll(
+        "section, .services article, .gallery img"
+    );
+
+    elements.forEach(el => {
+        el.style.opacity = "0";
+        el.style.transform = "translateY(50px)";
+        el.style.transition = "all .8s ease";
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+
+                entry.target.style.opacity = "1";
+                entry.target.style.transform = "translateY(0)";
+
+                observer.unobserve(entry.target);
+
+            }
+
+        });
+
+    }, {
+
+        threshold: 0.15
+
+    });
+
+    elements.forEach(el => observer.observe(el));
 
 
-// Плавное появление элементов при скролле
 
-const animatedItems = document.querySelectorAll(
-    ".adv-card, .service-card, .why-grid div, .gallery-grid img, .review-card, .contact-box"
-);
+    // =========================
+    // Параллакс главной картинки
+    // =========================
 
+    const heroImage = document.querySelector(".hero-image img");
 
-animatedItems.forEach(item => {
+    window.addEventListener("scroll", () => {
 
-    item.style.opacity = "0";
-    item.style.transform = "translateY(40px)";
-    item.style.transition = "all .7s ease";
+        if (!heroImage) return;
 
-});
+        const offset = Math.min(window.scrollY * 0.12, 70);
 
+        heroImage.style.transform =
+            `translateY(${offset}px) scale(1.03)`;
 
-
-const observer = new IntersectionObserver((entries)=>{
-
-
-    entries.forEach(entry=>{
+    });
 
 
-        if(entry.isIntersecting){
 
+    // =========================
+    // Затемнение шапки
+    // =========================
 
-            entry.target.style.opacity = "1";
+    const header = document.querySelector(".header");
 
-            entry.target.style.transform = "translateY(0)";
+    window.addEventListener("scroll", () => {
 
+        if (!header) return;
 
-            observer.unobserve(entry.target);
+        if (window.scrollY > 50) {
 
+            header.style.background = "rgba(10,10,10,.97)";
+            header.style.boxShadow = "0 12px 40px rgba(0,0,0,.45)";
+
+        } else {
+
+            header.style.background = "rgba(10,10,10,.88)";
+            header.style.boxShadow = "none";
 
         }
 
-
-    });
-
-
-},{
-    threshold:.15
-});
-
-
-
-animatedItems.forEach(item=>{
-
-    observer.observe(item);
-
-});
-
-
-
-
-
-
-
-
-// ===============================
-// Анимация кнопок
-// ===============================
-
-
-const buttons = document.querySelectorAll(
-    ".main-btn, .header-btn, .second-btn"
-);
-
-
-
-buttons.forEach(button=>{
-
-
-    button.addEventListener("mouseenter",()=>{
-
-
-        button.style.transform="translateY(-5px)";
-
-
     });
 
 
 
-    button.addEventListener("mouseleave",()=>{
+    // =========================
+    // Плавый скролл
+    // =========================
 
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
 
-        button.style.transform="translateY(0)";
+        link.addEventListener("click", e => {
 
+            const target = document.querySelector(
+                link.getAttribute("href")
+            );
 
-    });
-
-
-});
-
-
-
-
-
-
-
-
-// ===============================
-// Параллакс главного изображения
-// ===============================
-
-
-const heroImage = document.querySelector(".hero-image");
-
-
-window.addEventListener("scroll",()=>{
-
-
-    if(heroImage){
-
-
-        let offset = window.scrollY * 0.05;
-
-
-        heroImage.style.transform =
-        `translateY(${offset}px)`;
-
-
-    }
-
-
-});
-
-
-
-
-
-
-
-
-// ===============================
-// Плавная навигация
-// ===============================
-
-
-document.querySelectorAll('a[href^="#"]').forEach(link=>{
-
-
-    link.addEventListener("click",function(e){
-
-
-        const target =
-        document.querySelector(this.getAttribute("href"));
-
-
-
-        if(target){
-
+            if (!target) return;
 
             e.preventDefault();
 
-
             target.scrollIntoView({
 
-                behavior:"smooth"
+                behavior: "smooth"
 
             });
 
-
-        }
-
+        });
 
     });
 
+
+
+    // =========================
+    // Hover кнопок
+    // =========================
+
+    document.querySelectorAll(".btn").forEach(btn => {
+
+        btn.addEventListener("mouseenter", () => {
+
+            btn.style.transform = "translateY(-5px)";
+
+        });
+
+        btn.addEventListener("mouseleave", () => {
+
+            btn.style.transform = "translateY(0)";
+
+        });
+
+    });
+
+
+
+    // =========================
+    // Подсветка карточек услуг
+    // =========================
+
+    document.querySelectorAll(".services article").forEach(card => {
+
+        card.addEventListener("mousemove", e => {
+
+            const rect = card.getBoundingClientRect();
+
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.background = `
+            radial-gradient(circle at ${x}px ${y}px,
+            rgba(201,169,110,.18),
+            rgba(20,20,20,1) 70%)
+            `;
+
+        });
+
+        card.addEventListener("mouseleave", () => {
+
+            card.style.background = "#151515";
+
+        });
+
+    });
+
+
+
+    // =========================
+    // Небольшой zoom фотографий
+    // =========================
+
+    document.querySelectorAll(".gallery img").forEach(img => {
+
+        img.addEventListener("mouseenter", () => {
+
+            img.style.transform = "scale(1.05)";
+
+        });
+
+        img.addEventListener("mouseleave", () => {
+
+            img.style.transform = "scale(1)";
+
+        });
+
+    });
 
 });
-
-
-
-
-
-
-
-
-// ===============================
-// Анимация логотипа
-// ===============================
-
-
-const logo = document.querySelector(".logo");
-
-
-if(logo){
-
-
-    logo.addEventListener("mouseenter",()=>{
-
-
-        logo.style.transform="scale(1.05)";
-
-
-    });
-
-
-
-    logo.addEventListener("mouseleave",()=>{
-
-
-        logo.style.transform="scale(1)";
-
-
-    });
-
-
-}
